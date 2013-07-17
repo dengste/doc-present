@@ -1,4 +1,4 @@
-* doc-present - Showing slides with Emacs
+* doc-present: Showing slides with Emacs
 
 This package is meant to display presentation slides with a two
 monitor setup.  On one screen it shows the actual slides, and on the
@@ -161,14 +161,14 @@ like your PDF but with the suffix '-notes' added to it; that means, if
 your PDF file is called /presentation.pdf/, your Org file must be
 named /presentation-notes.org/. It must be of the following form:
 
-#+begin_example
+#+begin_src emacs-lisp
 * 1
 - This are the notes for slide 1
 - Do your motivational thing
 * 2-5
 - These are other notes
 - They will be displayed on slides 2 to 5
-#+end_example
+#+end_src
 
 Granted, this is not very flexible, especially when you insert slides,
 since then you'll have to adapt all the numbers, so you should really
