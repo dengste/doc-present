@@ -206,3 +206,9 @@ So really, you will have to live with this delay. If you want to
 quickly select frames, you should use overview mode. You might also
 want to try setting =imagemagick-render-type= to '1', which can speed
 things up as well.
+
+*** Screenshots
+
+[[docpresent-main.png]]
+
+[[docpresent-overview.png]]
