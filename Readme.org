@@ -1,0 +1,210 @@
+* doc-present - Showing slides with Emacs
+
+This package is meant to display presentation slides with a two
+monitor setup.  On one screen it shows the actual slides, and on the
+other a so called "presenter screen", showing not only the current
+slide but also the next one, a timer and also optional notes which can
+be drawn from an Org file.  It also features an overview mode to
+quickly select certain slides.
+
+** Requirements
+
+- Emacs 24.x (I test only with x=3; older version may or may not work).
+
+- Emacs must be built with Imagemagick support (so no Win32/OSX at
+  the moment)
+
+** Quick Tour
+
+- First, you should increase the variable =doc-view-resolution= for
+  better rendering quality (300 should be enough).
+
+- Load the file /doc-present.el/ and =eval-buffer= it.
+
+- Load the PDF file containing your slides; doc-view mode should kick
+  in and display the first slide, converting the rest in the
+  background. Wait until all slides are converted (progress is shown
+  in the modeline).
+
+- Connect your laptop to the presentation monitor/projector and do
+  whatever you have to do to set it up so that you have a usual
+  two-monitor setup, i.e., one screen is (virtually) next to the other
+  and you can drag windows to and fro.
+
+- =M-x doc-present=
+
+- A new frame should pop up, showing the first slide and a little text
+  saying that you should drag this frame to the presentation
+  screen. Do exactly that and then press =f= to toggle fullscreen.
+
+- In the other frame, on your laptop screen, you should see the
+  presenter window; it shows the current slide, next slide, timer,
+  etc.
+
+- Use =s= to start the stop-watch timer at the beginning of your talk.
+  Use cursor keys to navigate between slides, the =.= key to blank out
+  the presentation screen, and =o= to enter overview mode. Press =h=
+  for a quick summary of available keys.
+
+- When finished, press =q=.
+
+** The long story
+
+Being fed up with the existing PDF viewers, especially their rendering
+quality and lacking capabilities for doing presentations, I decided
+that Emacs must save the day yet once again.
+
+*** doc-view
+
+Emacs ships with doc-view, which can render PDFs by using ghostscript
+to convert the pages to png files. By increasing the variable
+=doc-view-resolution=, you should get excellent quality, and from my
+experience ghostscript's PDF support is better than libpoppler's.
+
+The first thing you need to do though is to increase the value for
+=doc-view-resolution=. The needed value depends on the resolution of
+your presentation monitor, of course, but don't be fooled by your
+24"-monitor 1920x1200 pixel IPS-panel; from my experience, most
+presentation projectors still have 1024x768, which means that a value
+of 300 should be more than enough. You can choose higher values just
+to be on the safe side, but converting and scaling those images to the
+correct size will be noticeably slower, so I'd rather not do that.
+
+*** The main slide frame
+
+When you start doc-present, a new frame will be generated which is the
+main slide frame. It is a special frame with no minibuffer, mode-line,
+fringes, etc., so that almost all space can be used for displaying
+your slides. I'm saying 'almost' because there are two caveats:
+
+- The size of an Emacs frame can only be multiples of the frame's
+  default font size. That means, if you have a 8x16 font, it's width
+  and height will be automatically reduced to be divisible by 8 and 16,
+  resp.
+
+- Since the frame has no fringes, its rightmost column is reserved for
+  displaying the truncation/continuation characters for overlong
+  lines.
+
+There's a dirty trick though: We simply choose a /very/ tiny default
+font for the frame. Since Emacs can nowadays use freely scalable XFT
+fonts, we can choose such a font for the main slide frame and scale it
+down so that it is just 1 pixel wide and 2 pixels high. That means,
+the rightmost column will just be one pixel, and it will always
+exactly fit in the screen's resolution. so that this one-pixel wide
+rightmost column has the correct color.
+
+All this happens automatically, but you have to make sure that the
+face used for this does actually exist on your system. Simply do
+
+=M-x customize-face RET doc-present-tiny-xft-font RET=
+
+The default is /Bitstream Charter/, which I guess should exist on most
+modern GNU/Linux systems.
+
+You should set =doc-present-slide-frame-background-color= to the
+background color of your slides (default: white); this is important if
+your slides don't exactly fit the presentation screen (because of
+different aspect ratios).
+
+*** The presenter frame
+
+By default, the presenter frame shows a stop-watch timer, the current
+and maximum slide number, the local time, the current and next slide
+and optionally notes for the current slide.
+
+This can be changed in practically every way; see the variable
+=doc-present-presenter-layout= to change what and where stuff is
+displayed. Also, =doc-present-current-slide-width= and
+=doc-present-next-slide-width= change the width of the current/next
+slide.
+
+*** Available keys
+
+- =Right, Down, PgDown, Space, Return=: Next Slide
+
+- =Left, Up, PgUp=: Previous Slide
+
+- =f=: Toggle fullscreen of main slide frame
+
+- =s=: Start/Stop the stop-watch timer
+
+- =.=: Black out the main slide frame
+
+- =o=: Start overview mode
+
+- =m=: Create a new main slide frame
+
+- =h=: Quick help
+
+- =q=: Quit
+
+*** Overview mode
+
+The overview mode shows all slides of your presentation in a miniature
+view; it can be triggered by pressing =o=. You can then move between
+the different slides with the cursor keys, and pressing =Return= will
+show a slide in the main slide frame while staying in overview mode
+in the presenter frame. Pressing the =Space= key will show the slide
+and switch to the presentation mode.
+
+If you press =o= once again in overview mode, the main slide frame
+will also switch to overview mode as well. This can be very helpful
+for the Q&A after the talk since it makes it easier for people in the
+audience to again refer to certain slides.
+
+*** Notes
+
+You can display additional notes on the presenter frame for each
+slide. This is done by creating an Org file which has the same name
+like your PDF but with the suffix '-notes' added to it; that means, if
+your PDF file is called /presentation.pdf/, your Org file must be
+named /presentation-notes.org/. It must be of the following form:
+
+#+begin_example
+* 1
+- This are the notes for slide 1
+- Do your motivational thing
+* 2-5
+- These are other notes
+- They will be displayed on slides 2 to 5
+#+end_example
+
+Granted, this is not very flexible, especially when you insert slides,
+since then you'll have to adapt all the numbers, so you should really
+do your notes when the slides are finished. Also note that if you're
+successively revealing parts of your slides, those will be separate
+pages in your PDF. If you have better ideas on how to uniquely link
+notes to certain slides, I'm all ears.
+
+*** Frame focus
+
+Usually, it shouldn't make a difference which of the frames currently
+has focus. Keys should work in both of them, but still you should make
+sure that the presenter frame always has focus; it's simply better
+tested and also "more natural". While it is possible in Emacs to
+select a certain frame, this can immediately be changed by the rules
+of your window manager, so this is something you have to make sure. If
+doc-present notices that the presenter frame does not have focus, it
+will show you a warning.
+
+Another reason why you should give focus to the presenter frame is to
+avoid redraws of the slide, which usually leads to flickering. This is
+especially noticeable when the mouse is over the slide picture. Still,
+a small flicker from time to time seems to be unavoidable, but I don't
+think it's a big issue (just blame it on the projector).
+
+*** Speed
+
+Scaling images with Emacs isn't particularly fast, so there usually is
+a noticeable delay before the next slide is displayed. You will notice
+however that once a slide was displayed, moving back and forth again
+will be fast because the image is now in Emacs' image
+cache. Unfortunately, the only way to cache images is to actually
+display them on the correct frame in the scaled size, which usually
+isn't feasible before a presentation.
+
+So really, you will have to live with this delay. If you want to
+quickly select frames, you should use overview mode. You might also
+want to try setting =imagemagick-render-type= to '1', which can speed
+things up as well.
