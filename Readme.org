@@ -91,11 +91,10 @@ font for the frame. Since Emacs can nowadays use freely scalable XFT
 fonts, we can choose such a font for the main slide frame and scale it
 down so that it is just 1 pixel wide and 2 pixels high. That means,
 the rightmost column will just be one pixel, and it will always
-exactly fit in the screen's resolution. so that this one-pixel wide
-rightmost column has the correct color.
+exactly fit in the screen's resolution.
 
 All this happens automatically, but you have to make sure that the
-face used for this does actually exist on your system. Simply do
+used font family does actually exist on your system. Simply do
 
 =M-x customize-face RET doc-present-tiny-xft-font RET=
 
@@ -105,7 +104,8 @@ modern GNU/Linux systems.
 You should set =doc-present-slide-frame-background-color= to the
 background color of your slides (default: white); this is important if
 your slides don't exactly fit the presentation screen (because of
-different aspect ratios).
+different aspect ratios). Also, the rightmost 1-pixel column will have
+this color.
 
 *** The presenter frame
 
@@ -149,20 +149,20 @@ in the presenter frame. Pressing the =Space= key will show the slide
 and switch to the presentation mode.
 
 If you press =o= once again in overview mode, the main slide frame
-will also switch to overview mode as well. This can be very helpful
-for the Q&A after the talk since it makes it easier for people in the
-audience to again refer to certain slides.
+will switch to overview mode as well. This can be very helpful for the
+Q&A after the talk since it makes it easier for people in the audience
+to refer to certain slides.
 
 *** Notes
 
 You can display additional notes on the presenter frame for each
 slide. This is done by creating an Org file which has the same name
-like your PDF but with the suffix '-notes' added to it; that means, if
+like your PDF, but with the suffix '-notes' added to it; that means, if
 your PDF file is called /presentation.pdf/, your Org file must be
 named /presentation-notes.org/. It must be of the following form:
 
 :  * 1
-:    - This are the notes for slide 1
+:    - These are the notes for slide 1
 :    - Do your motivational thing
 :  * 2-5
 :    - These are other notes
@@ -181,10 +181,11 @@ Usually, it shouldn't make a difference which of the frames currently
 has focus. Keys should work in both of them, but still you should make
 sure that the presenter frame always has focus; it's simply better
 tested and also "more natural". While it is possible in Emacs to
-select a certain frame, this can immediately be changed by the rules
-of your window manager, so this is something you have to make sure. If
-doc-present notices that the presenter frame does not have focus, it
-will show you a warning.
+select a certain frame, your window manager likely changes that
+depending on your mouse position. Therefore, this is something only
+you can manually ensure. If doc-present notices that the presenter
+frame does not have focus, it will show you a warning, but it will
+work nonetheless.
 
 Another reason why you should give focus to the presenter frame is to
 avoid redraws of the slide, which usually leads to flickering. This is
