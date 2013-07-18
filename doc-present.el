@@ -231,6 +231,10 @@ rightmost column will be.")
 
 ;; Code
 
+;; `user-error' isn't defined in Emacs < 24.3
+(unless (fboundp 'user-error)
+  (defalias 'user-error 'error))
+
 (defun doc-present ()
   (interactive)
   (when doc-view-current-converter-processes
