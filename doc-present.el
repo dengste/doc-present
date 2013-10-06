@@ -237,7 +237,7 @@ rightmost column will be.")
 
 (defun doc-present ()
   (interactive)
-  (when doc-view-current-converter-processes
+  (when (doc-present-is-converter-process-running)
     (user-error "Conversion not finished yet"))
   (let ((st doc-present--st)
 	size)
@@ -245,7 +245,7 @@ rightmost column will be.")
       (user-error "Not a doc-view buffer"))
     ;; Initialize our status structure
     (setf (doc-present-status-pframe st) (selected-frame))
-    (setf (doc-present-status-cachedir st) (doc-view-current-cache-dir))
+    (setf (doc-present-status-cachedir st) (doc-present-get-current-cache-dir-of-doc-view))
     (setf (doc-present-status-current st) 1)
     (setf (doc-present-status-max st) (doc-view-last-page-number))
     (setf (doc-present-status-filename st) (buffer-file-name))
@@ -264,6 +264,16 @@ rightmost column will be.")
     (doc-present-create-slide-frame)
     (doc-present-create-presenter-frame)
     (message "Press 'h' for help.")))
+
+(defun doc-present-get-current-cache-dir-of-doc-view ()
+  (if (boundp 'doc-view-current-cache-dir)
+      doc-view-current-cache-dir
+    doc-view--current-cache-dir))
+
+(defun doc-present-is-converter-process-running ()
+  (if (boundp 'doc-view-current-converter-process)
+      doc-view-current-converter-processes
+    doc-view--current-converter-processes))
 
 (defvar doc-present-mode-map)
 (defun doc-present-mode ()
