@@ -271,7 +271,7 @@ rightmost column will be.")
     doc-view--current-cache-dir))
 
 (defun doc-present-is-converter-process-running ()
-  (if (boundp 'doc-view-current-converter-process)
+  (if (boundp 'doc-view-current-converter-processes)
       doc-view-current-converter-processes
     doc-view--current-converter-processes))
 
