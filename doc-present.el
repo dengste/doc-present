@@ -407,7 +407,7 @@ rightmost column will be.")
     (if (or (not (eq (car (mouse-position)) (doc-present-status-pframe doc-present--st)))
 	    (not (eq (selected-frame) (doc-present-status-pframe doc-present--st))))
 	(message warntext)
-      (when (string-match-p warntext (current-message))
+      (when (string-match-p warntext (or (current-message) ""))
 	(message nil)))))
 
 (defun doc-present-insert-stopwatch ()
