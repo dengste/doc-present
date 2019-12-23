@@ -184,6 +184,9 @@ m: Create new slide frame
 h,?: This
 q: Quit\n")
 
+(defvar doc-present-image-type 'imagemagick
+  "Type of the image given to `create-image'.")
+
 ;; Faces
 
 (defface doc-present-stopwatch-face
@@ -379,7 +382,7 @@ rightmost column will be.")
 	 (expand-file-name (format "page-%d.png" number)
 			   (doc-present-status-cachedir doc-present--st))))
     (insert-image
-     (create-image file 'imagemagick nil :width width
+     (create-image file doc-present-image-type nil :width width
 		   :margin (or margin 0) :relief (or relief 0)))))
 
 (defun doc-present-insert-clock ()
@@ -588,7 +591,7 @@ rightmost column will be.")
 	    (expand-file-name
 	     (format "page-%d.png" (car current))
 	     (doc-present-status-cachedir doc-present--st))
-	    'imagemagick nil (car size) (cdr size)))
+	    doc-present-image-type nil (car size) (cdr size)))
 	    (redisplay t)
 	    (when (input-pending-p)
 	      (throw 'exit nil))))))))
@@ -728,7 +731,7 @@ rightmost column will be.")
 	  (setf (doc-present-status-slide-size doc-present--st)
 		(cons :width width)))
 	(insert-image
-	 (apply 'create-image file 'imagemagick nil props))
+	 (apply 'create-image file doc-present-image-type nil props))
 	(setq buffer-read-only t)))))
 
 ;;; Slide Overview
@@ -776,7 +779,7 @@ rightmost column will be.")
 				   cachedir))
       (aset doc-present-overview-image-positions counter (point))
       (insert-image
-       (create-image file 'imagemagick nil
+       (create-image file doc-present-image-type nil
 		     :width doc-present-overview-image-width
 		     :margin charwidth
 		     :relief 0))
